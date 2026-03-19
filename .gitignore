@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Logs and local runtime artifacts
+*.log
+*.pid
+*.tmp
+
+# Local generated/state files
+apartments_dashboard/booking_storage_state.json
+apartments_dashboard/refresh_bot_last.png
+apartments_dashboard/refresh_bot_last_run.txt
+
+# Sensitive/local config with private iCal URLs
+apartments_dashboard/dashboard_config.json

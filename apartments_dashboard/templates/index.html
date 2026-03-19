@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apartments Dashboard</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 20px; color: #1f2937; }
+    h1 { margin: 0 0 16px; }
+    form { display: flex; gap: 12px; align-items: end; margin-bottom: 16px; flex-wrap: wrap; }
+    label { display: flex; flex-direction: column; font-size: 14px; gap: 4px; }
+    input { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; }
+    button { padding: 8px 12px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #f9fafb; }
+    .warn { margin-top: 16px; padding: 10px; border: 1px solid #f59e0b; background: #fffbeb; border-radius: 8px; }
+    .muted { color: #6b7280; font-size: 12px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Apartments Dashboard</h1>
+
+  <form method="get" action="/">
+    <label>
+      Start date
+      <input type="date" name="start_date" value="{{ start_date }}" />
+    </label>
+    <label>
+      Days
+      <input type="number" name="days" min="1" max="120" value="{{ days }}" />
+    </label>
+    <button type="submit">Refresh</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Check-ins</th>
+        <th>Check-outs</th>
+        <th>Potential check-outs</th>
+        <th>Check-in apartments</th>
+        <th>Check-out apartments</th>
+        <th>Potential apartments</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.date }}</td>
+        <td>{{ row.checkins_count }}</td>
+        <td>{{ row.checkouts_count }}</td>
+        <td>{{ row.potential_count }}</td>
+        <td>{{ ", ".join(row.checkins_apartments) if row.checkins_apartments else "-" }}</td>
+        <td>{{ ", ".join(row.checkouts_apartments) if row.checkouts_apartments else "-" }}</td>
+        <td>{{ ", ".join(row.potential_apartments) if row.potential_apartments else "-" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if warnings %}
+  <div class="warn">
+    <strong>Source warnings:</strong>
+    <ul>
+      {% for w in warnings %}
+      <li>{{ w.apartment }} | {{ w.url }}<br>{{ w.error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div class="muted">API: /api/dashboard?start_date=YYYY-MM-DD&days=21</div>
+</body>
+</html>

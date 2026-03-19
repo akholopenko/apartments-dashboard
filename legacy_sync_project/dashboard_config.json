@@ -1,0 +1,12 @@
+{
+  "apartments": [
+    {
+      "name": "Apartment 1",
+      "ical_urls": [
+        "https://ical.booking.com/v1/export/t/bab87879-f3e4-44ea-845d-77cef165e71f.ics",
+        "https://www.airbnb.es/calendar/ical/1380914254871656267.ics?t=485622702244431ba985547bb50dda6f"
+      ]
+    }
+  ],
+  "request_timeout_seconds": 20
+}

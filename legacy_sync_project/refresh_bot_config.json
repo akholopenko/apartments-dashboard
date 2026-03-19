@@ -1,0 +1,33 @@
+{
+  "booking_login_url": "https://admin.booking.com/hotel/hoteladmin/extranet_ng/index.html",
+  "booking_connections_url": "https://admin.booking.com/hotel/hoteladmin/extranet_ng/manage/channel-manager/index.html",
+  "headless": false,
+  "navigation_timeout_ms": 45000,
+  "manual_2fa_timeout_seconds": 120,
+  "cooldown_seconds": 120,
+  "storage_state_path": "booking_storage_state.json",
+  "screenshot_path": "refresh_bot_last.png",
+  "selectors": {
+    "username": [
+      "input[name='loginname']",
+      "input[type='email']",
+      "input[name='username']"
+    ],
+    "password": [
+      "input[name='password']",
+      "input[type='password']"
+    ],
+    "submit": [
+      "button[type='submit']",
+      "button:has-text('Sign in')",
+      "button:has-text('Log in')",
+      "button:has-text('Войти')"
+    ],
+    "refresh": [
+      "button:has-text('Refresh connection')",
+      "button:has-text('Update connection')",
+      "button:has-text('Actualizar conexión')",
+      "button:has-text('Обновить подключение')"
+    ]
+  }
+}

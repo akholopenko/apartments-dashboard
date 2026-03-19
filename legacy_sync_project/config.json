@@ -1,0 +1,8 @@
+{
+  "ical_urls": [
+    "https://ical.booking.com/v1/export/t/7c00abbd-cb5a-47d2-839b-01298606e388.ics",
+    "https://www.airbnb.es/calendar/ical/1380914254871656267.ics?t=485622702244431ba985547bb50dda6f"
+  ],
+  "max_stay_days": 0,
+  "request_timeout_seconds": 20
+}
