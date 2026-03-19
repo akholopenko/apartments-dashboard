@@ -1,0 +1,33 @@
+{
+  "apartments": [
+    {
+      "name": "Ap4",
+      "ical_urls": [
+        "https://ical.booking.com/v1/export/t/d5598a74-c660-4e1a-949a-612e35f09903.ics",
+        "https://www.airbnb.es/calendar/ical/1351362623550914043.ics?t=aa7f0711c96545d89e7c628e8d3539ad"
+      ]
+    },
+    {
+      "name": "Ap2",
+      "ical_urls": [
+        "https://ical.booking.com/v1/export/t/d8165f7d-4991-4730-8512-32827283f548.ics",
+        "https://www.airbnb.es/calendar/ical/1365474077203797225.ics?t=daf519484d434ee6b6540f62a4d04bf5"
+      ]
+    },
+    {
+      "name": "Ap1",
+      "ical_urls": [
+        "https://ical.booking.com/v1/export/t/0ef7cdb9-555c-4aaa-a8e6-a8564672cbc0.ics",
+        "https://www.airbnb.es/calendar/ical/1451638859985668524.ics?t=07d18072c47f4886b3991e1666164898"
+      ]
+    },
+    {
+      "name": "Ap3",
+      "ical_urls": [
+        "https://ical.booking.com/v1/export/t/aeed76f2-918a-4b62-829d-cd92b3814419.ics",
+        "https://www.airbnb.es/calendar/ical/1380914254871656267.ics?t=485622702244431ba985547bb50dda6f"
+      ]
+    }
+  ],
+  "request_timeout_seconds": 20
+}
