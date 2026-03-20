@@ -11,17 +11,41 @@
     label { display: flex; flex-direction: column; font-size: 14px; gap: 4px; }
     input { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; }
     button { padding: 8px 12px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; }
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
-    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
-    th { background: #f9fafb; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 28px; background: #ffffff; }
+    th, td { border: 1px solid #232323; padding: 8px; text-align: left; vertical-align: top; background: #ffffff; }
+    th { background: #ffffff; font-weight: 700; }
+    td.metric { font-weight: 700; text-align: center; min-width: 120px; }
+    .metric-load-0 { background: #ffffff; color: #111827; }
+    .metric-load-1 { background: #c6deb4; color: #111827; }
+    .metric-load-2 { background: #e5cf9a; color: #111827; }
+    .metric-load-3 { background: #d9b495; color: #111827; }
+    .metric-load-4 { background: #7a7a7a; color: #ffffff; }
+    .past-row td { background: #ececec; color: #707070; }
     .warn { margin-top: 16px; padding: 10px; border: 1px solid #f59e0b; background: #fffbeb; border-radius: 8px; }
     .muted { color: #6b7280; font-size: 12px; margin-top: 8px; }
+    .switch { display: flex; gap: 8px; margin-bottom: 12px; }
+    .switch a { text-decoration: none; padding: 6px 10px; border-radius: 6px; border: 1px solid #9ca3af; color: #111827; }
+    .switch a.active { background: #111827; color: #ffffff; border-color: #111827; }
+    .month-nav { display: flex; gap: 8px; align-items: center; margin: 10px 0; }
+    .month-nav a { text-decoration: none; padding: 6px 10px; border-radius: 6px; border: 1px solid #374151; color: #111827; background: #f3f4f6; }
+    .month-nav .label { font-size: 22px; font-weight: 700; margin-left: 4px; }
+    .calendar { width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; }
+    .calendar th, .calendar td { border: 1px solid #232323; padding: 8px; vertical-align: top; background: #ffffff; }
+    .calendar th { font-size: 18px; }
+    .calendar td { height: 110px; font-size: 16px; }
+    .cal-day { font-weight: 700; margin-bottom: 6px; }
+    .cal-metric { font-weight: 700; padding: 4px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; font-size: 24px; line-height: 1.1; min-width: 72px; text-align: center; }
+    .cal-checkin { font-size: 22px; line-height: 1.1; font-weight: 600; }
+    .empty { background: #f3f4f6; }
+    .past-cell { background: #ececec !important; color: #707070; }
+    .today-cell { border: 2px solid #d11f1f !important; }
   </style>
 </head>
 <body>
   <h1>Apartments Dashboard</h1>
 
   <form method="get" action="/">
+    <input type="hidden" name="mode" value="{{ mode }}" />
     <label>
       Start date
       <input type="date" name="start_date" value="{{ start_date }}" />
@@ -33,32 +57,112 @@
     <button type="submit">Refresh</button>
   </form>
 
+  <div class="switch">
+    <a href="/?mode=table&start_date={{ start_date }}&days={{ days }}" class="{{ 'active' if mode == 'table' else '' }}">Table</a>
+    <a href="/?mode=calendar&start_date={{ start_date }}&days={{ days }}" class="{{ 'active' if mode == 'calendar' else '' }}">Calendar</a>
+  </div>
+
+  {% if mode == "table" %}
   <table>
     <thead>
       <tr>
         <th>Date</th>
+        <th>Cleanings</th>
         <th>Check-ins</th>
-        <th>Check-outs</th>
-        <th>Potential check-outs</th>
         <th>Check-in apartments</th>
         <th>Check-out apartments</th>
-        <th>Potential apartments</th>
       </tr>
     </thead>
     <tbody>
       {% for row in rows %}
-      <tr>
-        <td>{{ row.date }}</td>
-        <td>{{ row.checkins_count }}</td>
-        <td>{{ row.checkouts_count }}</td>
-        <td>{{ row.potential_count }}</td>
-        <td>{{ ", ".join(row.checkins_apartments) if row.checkins_apartments else "-" }}</td>
-        <td>{{ ", ".join(row.checkouts_apartments) if row.checkouts_apartments else "-" }}</td>
-        <td>{{ ", ".join(row.potential_apartments) if row.potential_apartments else "-" }}</td>
+      {% set real_cleanings = row.checkouts_count %}
+      {% if real_cleanings >= 4 %}
+      {% set load_class = "metric-load-4" %}
+      {% elif real_cleanings == 3 %}
+      {% set load_class = "metric-load-3" %}
+      {% elif real_cleanings == 2 %}
+      {% set load_class = "metric-load-2" %}
+      {% elif real_cleanings == 1 %}
+      {% set load_class = "metric-load-1" %}
+      {% else %}
+      {% set load_class = "metric-load-0" %}
+      {% endif %}
+      {% set d = row.date.split("-") %}
+      {% set is_past = row.date < today_iso %}
+      <tr class="{{ 'past-row' if is_past else '' }}">
+        <td>{{ d[2] }}.{{ d[1] }}.{{ d[0] }}</td>
+        <td class="metric {{ load_class }}">
+          {% if is_past %}
+            -
+          {% else %}
+            {{ row.checkouts_count }}{% if row.potential_count > 0 %} + {{ row.potential_count }}{% endif %}
+          {% endif %}
+        </td>
+        <td class="metric">{{ "-" if is_past else row.checkins_count }}</td>
+        <td>{{ "-" if is_past else (", ".join(row.checkins_apartments) if row.checkins_apartments else "-") }}</td>
+        <td>{{ "-" if is_past else (", ".join(row.checkouts_apartments) if row.checkouts_apartments else "-") }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  {% else %}
+  <div class="month-nav">
+    <a href="/?mode=calendar&start_date={{ prev_month_start }}&days={{ days }}">← Previous month</a>
+    <a href="/?mode=calendar&start_date={{ next_month_start }}&days={{ days }}">Next month →</a>
+    <span class="label">{{ month }}</span>
+  </div>
+  <table class="calendar">
+    <thead>
+      <tr>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+        <th>Sun</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for week in calendar_weeks %}
+      <tr>
+        {% for cell in week %}
+        {% if cell %}
+        {% set real_cleanings = cell.checkouts_count %}
+        {% if real_cleanings >= 4 %}
+        {% set load_class = "metric-load-4" %}
+        {% elif real_cleanings == 3 %}
+        {% set load_class = "metric-load-3" %}
+        {% elif real_cleanings == 2 %}
+        {% set load_class = "metric-load-2" %}
+        {% elif real_cleanings == 1 %}
+        {% set load_class = "metric-load-1" %}
+        {% else %}
+        {% set load_class = "metric-load-0" %}
+        {% endif %}
+        {% set d = cell.date.split("-") %}
+        {% set is_past = cell.date < today_iso %}
+        {% set is_today = cell.date == today_iso %}
+        <td class="{{ 'past-cell' if is_past else '' }} {{ 'today-cell' if is_today else '' }}">
+          <div class="cal-day">{{ d[2] }}</div>
+          {% if is_past %}
+            <div class="cal-checkin">-</div>
+          {% else %}
+            <div class="cal-metric {{ load_class }}">
+              {{ cell.checkouts_count }}{% if cell.potential_count > 0 %} + {{ cell.potential_count }}{% endif %}
+            </div>
+            <div class="cal-checkin">{{ cell.checkins_count }}</div>
+          {% endif %}
+        </td>
+        {% else %}
+        <td class="empty"></td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
 
   {% if warnings %}
   <div class="warn">
