@@ -56,7 +56,10 @@
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
+    }
+    .cal-metric.compact {
+      font-size: 20px;
+      letter-spacing: -0.2px;
     }
     .cal-checkin { font-size: 22px; line-height: 1.1; font-weight: 600; }
     .empty { background: #f3f4f6; }
@@ -81,6 +84,7 @@
       .calendar td { height: 84px; font-size: 14px; }
       .cal-day { margin-bottom: 4px; padding: 1px 4px; }
       .cal-metric { font-size: 18px; padding: 2px 4px; margin-bottom: 4px; }
+      .cal-metric.compact { font-size: 16px; }
       .cal-checkin { font-size: 16px; }
     }
 
@@ -88,6 +92,7 @@
       table { font-size: 14px; }
       .calendar td { height: 72px; }
       .cal-metric { font-size: 16px; padding: 2px 3px; }
+      .cal-metric.compact { font-size: 14px; }
       .cal-checkin { font-size: 14px; }
       .muted { font-size: 11px; }
     }
@@ -148,7 +153,7 @@
           {% if is_past %}
             -
           {% else %}
-            {{ row.checkouts_count }}{% if row.potential_count > 0 %} + {{ row.potential_count }}{% endif %}
+            {{ row.checkouts_count }}{% if row.potential_count > 0 %}+{{ row.potential_count }}{% endif %}
           {% endif %}
         </td>
         <td class="metric">{{ "-" if is_past else row.checkins_count }}</td>
@@ -203,8 +208,8 @@
           {% if is_past %}
             <div class="cal-checkin">-</div>
           {% else %}
-            <div class="cal-metric {{ load_class }}">
-              {{ cell.checkouts_count }}{% if cell.potential_count > 0 %} + {{ cell.potential_count }}{% endif %}
+            <div class="cal-metric {{ load_class }} {{ 'compact' if cell.potential_count > 0 else '' }}">
+              {{ cell.checkouts_count }}{% if cell.potential_count > 0 %}+{{ cell.potential_count }}{% endif %}
             </div>
             <div class="cal-checkin">{{ cell.checkins_count }}</div>
           {% endif %}
