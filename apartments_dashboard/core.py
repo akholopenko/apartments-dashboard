@@ -164,14 +164,14 @@ def day_stats(apartments_data, day):
         has_checkin = any(start == day for start, _ in raw_ranges)
         has_checkout = any(end == day for _, end in raw_ranges)
         occupied_today = is_occupied(occupancy_ranges, day)
-        occupied_yesterday = is_occupied(occupancy_ranges, day - timedelta(days=1))
 
         if has_checkin:
             checkins.append(apartment_name)
         if has_checkout:
             checkouts.append(apartment_name)
 
-        if (not has_checkout) and (not occupied_today) and (not occupied_yesterday):
+        # Every idle day can be sold as an independent stay that ends the same day.
+        if (not has_checkout) and (not occupied_today):
             potential.append(apartment_name)
 
     return checkins, checkouts, potential
